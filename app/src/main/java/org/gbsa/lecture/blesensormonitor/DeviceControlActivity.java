@@ -20,6 +20,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +46,11 @@ public class DeviceControlActivity extends AppCompatActivity {
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
+
+    MqttAndroidClient mqttAndroidClient;
+    private final static String SERVER_URI = "tcp://iot.amtel.co.kr";   //"tcp://broker.hivemq.com";
+    private final static String CLIENT_ID = "GBSA_TEST_01";
+    private final static String TOPIC = "v1/devices/me/telemetry";  // "gbsa/5g";
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
@@ -145,6 +156,23 @@ public class DeviceControlActivity extends AppCompatActivity {
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
+        }
+        mqttAndroidClient = new MqttAndroidClient(this, SERVER_URI, CLIENT_ID);
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName("gbsa_test_01");
+        try {
+            mqttAndroidClient.connect(options);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        String data = "{\"batt_level\":\"" + mDataField.getText() + "\"}";
+        MqttMessage message = new MqttMessage();
+        message.setPayload(data.getBytes());
+        try {
+            mqttAndroidClient.publish(TOPIC, message);
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 
