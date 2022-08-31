@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanActivity extends Activity {
+public class ScanActivity extends Activity implements AdapterView.OnItemClickListener {
     private final static String TAG = "CSH_SCAN";
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
@@ -121,7 +122,15 @@ public class ScanActivity extends Activity {
         mLeDeviceListAdapter = new LeDeviceListAdapter();
         ListView listView = findViewById(R.id.list_view);
         listView.setAdapter(mLeDeviceListAdapter);
+        listView.setOnItemClickListener(this);
         scanLeDevice(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scanLeDevice(false);
+        mLeDeviceListAdapter.clear();
     }
 
     @Override
@@ -135,10 +144,13 @@ public class ScanActivity extends Activity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        scanLeDevice(false);
-        mLeDeviceListAdapter.clear();
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
+        if (device == null) return;
+        final Intent intent = new Intent(this, DeviceControlActivity.class);
+        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        startActivity(intent);
     }
 
     private class LeDeviceListAdapter extends BaseAdapter {
