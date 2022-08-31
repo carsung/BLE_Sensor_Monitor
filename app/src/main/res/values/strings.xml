@@ -12,4 +12,6 @@
     <string name="bluetooth_unavailable"><b>Bluetooth could not be opened.</b>\nThis occurs when the Bluetooth is not available (for example it is already in use) or if the system has denied access (for example when Bluetooth access has been disabled).</string>
     <string name="intro">This sample shows a basic implementation for requesting permissions at runtime.\nClick the button below to request the Camera permission and open a full-screen camera preview.</string>
     <string name="open_camera_preview">Open Camera Preview</string>
+    <string name="error_bluetooth_not_supported">Bluetooth is not supported.</string>
+    <string name="unknown_device">Unknown Device</string>
 </resources>
