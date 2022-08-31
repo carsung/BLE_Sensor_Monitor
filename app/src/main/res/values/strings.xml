@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BLE Sensor Monitor</string>
+
+    <string name="scan_ble">Scan BLE Device</string>
+    <string name="bluetooth_access_required">Bluetooth access is required to display the camera preview.</string>
+    <string name="ok">OK</string>
+    <string name="bluetooth_permission_not_available">Permission is not available. Requesting camera permission.</string>
+    <string name="bluetooth_permission_available">Bluetooth permission is available. Starting preview.</string>
+    <string name="bluetooth_permission_granted">Bluetooth permission was granted. Starting preview.</string>
+    <string name="bluetooth_permission_denied">Bluetooth permission request was denied.</string>
+
+    <string name="bluetooth_unavailable"><b>Bluetooth could not be opened.</b>\nThis occurs when the Bluetooth is not available (for example it is already in use) or if the system has denied access (for example when Bluetooth access has been disabled).</string>
+    <string name="intro">This sample shows a basic implementation for requesting permissions at runtime.\nClick the button below to request the Camera permission and open a full-screen camera preview.</string>
+    <string name="open_camera_preview">Open Camera Preview</string>
+</resources>
