@@ -1,6 +1,5 @@
 package org.gbsa.lecture.blesensormonitor;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -13,16 +12,20 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.StandardCharsets;
@@ -141,6 +144,20 @@ public class DeviceControlActivity extends AppCompatActivity {
         mGattServiceList.setOnChildClickListener(serviceListClickListener);
         mConnectionState = findViewById(R.id.connection_state);
         mDataField = findViewById(R.id.data_value);
+        Button send = findViewById(R.id.btn_send);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String data = "{\"batt_state\":\"" + mDataField.getText() + "\"}";
+                MqttMessage message = new MqttMessage();
+                message.setPayload(data.getBytes());
+                try {
+                    mqttAndroidClient.publish(TOPIC, message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         getSupportActionBar().setTitle(mDeviceName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -162,18 +179,49 @@ public class DeviceControlActivity extends AppCompatActivity {
         options.setUserName("gbsa_test_01");
         try {
             mqttAndroidClient.connect(options);
+            Log.i(TAG, "trying connect...");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String data = "{\"batt_level\":\"" + mDataField.getText() + "\"}";
-        MqttMessage message = new MqttMessage();
-        message.setPayload(data.getBytes());
-        try {
-            mqttAndroidClient.publish(TOPIC, message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mqttAndroidClient.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                Log.i(TAG, "connect to : " + serverURI);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(DeviceControlActivity.this, R.string.broker_connected, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                try {
+                    mqttAndroidClient.subscribe(TOPIC, 0, new IMqttMessageListener() {
+                        @Override
+                        public void messageArrived(String topic, MqttMessage message) throws Exception {
+                            Log.i(TAG, "subscribed msg : " + message);
+//                            tv.setText(new String(message.getPayload()));
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+                Log.i(TAG, "connectionLost");
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+            }
+        });
+
     }
 
     @Override

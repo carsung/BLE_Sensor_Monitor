@@ -27,4 +27,5 @@
     <string name="unknown_service">Unknown service</string>
     <string name="devices_list">Devices List</string>
     <string name="btn_send">Send data to cloud</string>
+    <string name="broker_connected">Mqtt broker connected.</string>
 </resources>
