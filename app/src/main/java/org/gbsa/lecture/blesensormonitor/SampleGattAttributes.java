@@ -33,6 +33,8 @@ public class SampleGattAttributes {
         // Sample Characteristics.
         attributes.put(HEART_RATE_MEASUREMENT, "Heart Rate Measurement");
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
+        attributes.put("0000180f-0000-1000-8000-00805f9b34fb", "Battery Service UUID");
+        attributes.put("00002a19-0000-1000-8000-00805f9b34fb", "Battery Level UUID");
     }
 
     public static String lookup(String uuid, String defaultName) {
