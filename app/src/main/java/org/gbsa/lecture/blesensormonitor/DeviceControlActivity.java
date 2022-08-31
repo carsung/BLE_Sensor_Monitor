@@ -162,7 +162,7 @@ public class DeviceControlActivity extends AppCompatActivity {
         options.setUserName("gbsa_test_01");
         try {
             mqttAndroidClient.connect(options);
-        } catch (MqttException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -171,7 +171,7 @@ public class DeviceControlActivity extends AppCompatActivity {
         message.setPayload(data.getBytes());
         try {
             mqttAndroidClient.publish(TOPIC, message);
-        } catch (MqttException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
