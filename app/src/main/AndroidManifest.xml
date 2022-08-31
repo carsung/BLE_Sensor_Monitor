@@ -31,6 +31,7 @@
         <activity android:name=".ScanActivity" />
         <activity android:name=".DeviceControlActivity" />
         <service android:name=".BluetoothLeService" />
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>
