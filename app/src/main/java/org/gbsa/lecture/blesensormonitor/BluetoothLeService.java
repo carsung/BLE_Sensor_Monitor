@@ -19,6 +19,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +49,8 @@ public class BluetoothLeService extends Service {
 
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
+    public final static UUID UUID_BATTERY_LEVEL_MEASUREMENT =
+            UUID.fromString(SampleGattAttributes.BATTERY_LEVEL_MEASUREMENT);
 
    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
        @Override
@@ -158,6 +161,9 @@ public class BluetoothLeService extends Service {
            final int heartRate = characteristic.getIntValue(format, 1);
            Log.d(TAG, String.format("Received heart rate: %d", heartRate));
            intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
+       } else if (UUID_BATTERY_LEVEL_MEASUREMENT.equals(characteristic.getUuid())) {
+           int level =  characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
+           intent.putExtra(EXTRA_DATA, String.valueOf(level));
        } else {
            final byte[] data = characteristic.getValue();
            if (data != null && data.length > 0) {

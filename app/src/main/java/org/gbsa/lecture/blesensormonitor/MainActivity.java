@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity {
     private final static String TAG = "CSH_MAIN";
     private final static int PERMISSION_REQUEST_BLUETOOTH = 0;
 

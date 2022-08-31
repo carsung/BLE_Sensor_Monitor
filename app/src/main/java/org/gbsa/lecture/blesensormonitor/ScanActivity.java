@@ -22,11 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanActivity extends Activity implements AdapterView.OnItemClickListener {
+public class ScanActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private final static String TAG = "CSH_SCAN";
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
@@ -103,6 +104,8 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
             finish();
             return;
         }
+
+        getSupportActionBar().setTitle(R.string.devices_list);
     }
 
     @Override

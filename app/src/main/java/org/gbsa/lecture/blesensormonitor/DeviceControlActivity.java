@@ -18,12 +18,13 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DeviceControlActivity extends Activity {
+public class DeviceControlActivity extends AppCompatActivity {
     private static final String TAG = "CSH_BLE";
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -130,8 +131,8 @@ public class DeviceControlActivity extends Activity {
         mConnectionState = findViewById(R.id.connection_state);
         mDataField = findViewById(R.id.data_value);
 
-//        getActionBar().setTitle(mDeviceName);
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(mDeviceName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
