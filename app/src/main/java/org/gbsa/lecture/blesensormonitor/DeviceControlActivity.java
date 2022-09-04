@@ -179,7 +179,7 @@ public class DeviceControlActivity extends AppCompatActivity {
         options.setUserName("gbsa_test_01");
         try {
             mqttAndroidClient.connect(options);
-            Log.i(TAG, "trying connect...");
+            Log.i(TAG, "trying connect to" + SERVER_URI);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,6 +234,7 @@ public class DeviceControlActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mGattUpdateReceiver);
+        mqttAndroidClient.disconnect();
     }
 
     private void updateConnectionState(final int resId) {
