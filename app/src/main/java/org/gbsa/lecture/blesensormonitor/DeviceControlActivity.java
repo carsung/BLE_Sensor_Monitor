@@ -227,6 +227,12 @@ public class DeviceControlActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+//        unregisterReceiver(mGattUpdateReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(mGattUpdateReceiver);
     }
 
@@ -242,6 +248,7 @@ public class DeviceControlActivity extends AppCompatActivity {
     private void displayData(String data) {
         if (data != null) {
             mDataField.setText(data);
+            (findViewById(R.id.btn_send)).performClick();
         }
     }
 
