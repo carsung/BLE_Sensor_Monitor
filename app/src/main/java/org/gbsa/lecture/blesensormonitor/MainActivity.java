@@ -1,12 +1,14 @@
 package org.gbsa.lecture.blesensormonitor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int PERMISSION_REQUEST_BLUETOOTH = 0;
 
     private View mLayout;
-    ArrayList mPermissionList;
+    private ArrayList mPermissionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     private void startScanActivity() {
         /*mPermissionList = new ArrayList<>();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -48,19 +51,34 @@ public class MainActivity extends AppCompatActivity {
         } else {
             requestBluetoothPermissions();
         }*/
+        mPermissionList = new ArrayList<>();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED ) {
+            mPermissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED ) {
+            mPermissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                != PackageManager.PERMISSION_GRANTED ) {
+            mPermissionList.add(Manifest.permission.BLUETOOTH_SCAN);
+        }
+        if (mPermissionList.size() > 0 ) {
+            // Permission is missing and must be requested.
+             requestBluetoothPermissions();
+        } else {
             // Permission is already available, start camera preview
-
             Intent intent = new Intent(MainActivity.this, ScanActivity.class);
             startActivity(intent);
-        } else {
-            // Permission is missing and must be requested.
-            requestBluetoothPermissions();;
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     private void requestBluetoothPermissions() {
+        String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.BLUETOOTH_CONNECT,
+                                            Manifest.permission.BLUETOOTH_SCAN};
 //        ActivityCompat.requestPermissions(this, (String[]) mPermissionList.toArray(new String[mPermissionList.size()]), PERMISSION_REQUEST_BLUETOOTH);
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -73,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     // Request the permission
                     ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            permissions,
                             PERMISSION_REQUEST_BLUETOOTH);
                 }
             }).show();
@@ -82,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
             Snackbar.make(mLayout, R.string.bluetooth_unavailable, Snackbar.LENGTH_SHORT).show();
             // Request the permission. The result will be received in onRequestPermissionResult().
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_BLUETOOTH);
+                            permissions,
+                            PERMISSION_REQUEST_BLUETOOTH);
         }
     }
 
